@@ -24,6 +24,82 @@ public class Ex16Lotto {
 		 *        4회
 		 *        5회
 		 */
+		System.out.println("로또 구입금액은?");
+		money=sc.nextInt();
+		if(money<1000)
+		{
+			System.out.println("금액이 부족합니다");
+			return;
+		}
+		
+		for(int n=1;n<=money/1000;n++)
+		{
+			
+			//로또 배열 랜덤숫자 구하기,중복처리
+			for(int i=0;i<lotto.length;i++)
+			{
+				lotto[i]=r.nextInt(45)+1;
+				for(int j=0;j<i;j++)
+				{
+					if(lotto[i]==lotto[j])
+					{
+						i--;
+						break;//또는 continue 레이블
+					}
+				}
+			}
+			//오름차순 정렬
+			for(int i=0;i<lotto.length-1;i++)
+			{
+				for(int j=i+1;j<lotto.length;j++)
+				{
+					if(lotto[i]>lotto[j])
+					{
+						int temp=lotto[i];
+						lotto[i]=lotto[j];
+						lotto[j]=temp;
+					}
+				}
+			}
+			//출력
+			System.out.printf("%2d회 : ",n);
+			for(int lo:lotto)
+			{
+				System.out.printf("%4d",lo);
+			}
+			System.out.println();
+		}
 	}
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
