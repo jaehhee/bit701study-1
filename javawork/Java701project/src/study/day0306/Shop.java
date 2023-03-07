@@ -29,7 +29,8 @@ public class Shop {
 	{
 		this.sangpum=sangpum;
 		this.price=price;
-	}
+	}	
+	
 	//멤버변수 출력하기 위한 메서드
 	public void writeShop()
 	{
