@@ -5,6 +5,11 @@ import java.util.Scanner;
 interface Command
 {
 	public void process();
+	//jdk8 부터 인터페이스에서 static 메서드 구현이 가능
+	static String getName()
+	{
+		return "야옹이";
+	}
 }
 
 class Add implements Command
@@ -12,6 +17,7 @@ class Add implements Command
 	@Override
 	public void process() {
 		// TODO Auto-generated method stub
+		System.out.println("내 이름은 "+Command.getName());
 		System.out.println("추가합니다");
 	}
 }
