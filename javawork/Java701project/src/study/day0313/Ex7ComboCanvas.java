@@ -100,8 +100,7 @@ public class Ex7ComboCanvas  extends JFrame{
 			//문자열 출력
 			g.setFont(new Font("Impact",Font.ITALIC|Font.BOLD,35));
 			g.setColor(Color.magenta);
-			g.drawString("BitCamp 701 Class", 5, 200);
-			
+			g.drawString("BitCamp 701 Class", 5, 200);			
 		}
 	}	
 	
