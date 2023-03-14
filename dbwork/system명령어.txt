@@ -10,4 +10,8 @@ create user scott identified by a1234;
 --기본권한주기
 grant connect,resource to scott;
 
+--계정 생성후 테이블 space  오류시 아래 sql문 넣어준다
+alter user scott default tablespace users quota unlimited on users;
+
+
 
