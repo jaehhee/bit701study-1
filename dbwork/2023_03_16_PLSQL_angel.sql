@@ -333,6 +333,33 @@ END;
 */
 
 
+DECLARE
+    v_search shop.sangpum%type := '&sang';
+    
+    CURSOR s1
+    is
+    select * from shop where sangpum like '%'||v_search||'%';
+    
+    v_cnt number(5);    
+BEGIN
+    --일단 검색단어가 포함된 상품 갯수부터 구하기
+    select count(*) into v_cnt from shop where sangpum like '%'||v_search||'%';
+    
+    if v_cnt=0 then
+      DBMS_OUTPUT.PUT_LINE(v_search||' 상품은 목록에 없습니다');
+    else
+        DBMS_OUTPUT.PUT_LINE('총 '||v_cnt||' 개의 상품이 있습니다');
+        
+        for s in s1 loop
+            DBMS_OUTPUT.PUT_LINE('상품명 :'||s.sangpum);
+            DBMS_OUTPUT.PUT_LINE('색상   :'||s.color);
+            DBMS_OUTPUT.PUT_LINE('단가   :'||TRIM(to_char(s.dan,'L999,999')));--TRIM:양쪽 공백 제거
+            DBMS_OUTPUT.PUT_LINE('--------------------');   
+        end loop;
+    end if;	
+END;
+/
+
 
 
 
