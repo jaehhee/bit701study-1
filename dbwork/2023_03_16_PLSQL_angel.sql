@@ -361,6 +361,134 @@ END;
 /
 
 
+/*
+프로시져(procedure)
+:프로시져는 특정 작업을 수행하는 일종의 서브 프로그램으로
+데이타베이스에 저장되는 객체이다
+반복되는 코드같은 경우 프로시져에 저장해두었다가 호출해서
+실행만 하면 되므로 재사용성이 높다
+ 
+형식
+ 
+ create : 새로 생성, 같은 이름이 있으면 오류발생
+ create or replace :새로 생성,같은 이름이 있으면 덮어쓴다
+ 
+create [or replace] procedure 프로시져명
+   [파라미터 모드 데이타타입,....]
+is
+       	변수 선언
+begin
+            	코드;
+end;
+/
+ 
+호출:   exec 프로시져명
+            	exec 프로시져명(값..)
+*/
+
+--새로운 프로시져 생성
+ create or replace procedure mytest
+ is
+ begin
+    DBMS_OUTPUT.PUT_LINE('첫 프로시져 생성!!');
+ end;
+ /
+ 
+ --mytest 프로시저 호출
+ exec mytest;
+
+
+--구구단을 출력하는 프로시저 생성
+create or replace procedure gugu(dan number)
+ is
+ begin
+    if  dan<2 or dan>9 then
+        DBMS_OUTPUT.PUT_LINE('잘못된 구구단 숫자입니다');
+    else
+        DBMS_OUTPUT.PUT_LINE('**'||dan||'단**');
+        DBMS_OUTPUT.PUT_LINE(' ');
+        for a in 1..9 loop
+            DBMS_OUTPUT.PUT_LINE(dan||' x '||a||' = ' || dan*a);
+        end loop;
+    end if;
+ end;
+ /
+
+--gugu 실행
+exec gugu(5);
+exec gugu(19);
+
+--shop 에 상품을 추가하는 프로시저
+ create or replace procedure addshop(
+    sangpum shop.sangpum%type,su shop.su%type,
+    dan shop.dan%type,color shop.color%type
+ )
+ is
+ begin
+    DBMS_OUTPUT.PUT_LINE('shop db 에 '||sangpum||' 데이타를 추가합니다');
+    insert into shop values (seq_test.nextval,sangpum,su,dan,sysdate,color);  
+    DBMS_OUTPUT.PUT_LINE(sql%rowcount||'개의 상품이 추가되었습니다');
+    commit;
+ end;
+ /
+
+--상품추가
+exec addshop('자켓',1,200000,'white');
+
+/*
+    exec searchsangpum('블라우스');
+    
+    상품명    색상   단가
+    ---------------------
+    블라우스   yellow 33000
+    블라우스   orange 11000
+    
+    총 2개 검색
+    
+    없을경우
+       블라우스 관련 상품은 없습니다
+*/
+ create or replace procedure searchsangpum(v_sang shop.sangpum%type)
+ is
+   Cursor s1
+   is
+   select * from shop where sangpum like '%'||v_sang||'%';
+   
+   v_cnt number(3);
+   
+ begin
+    select count(*) into v_cnt
+    from shop where sangpum like '%'||v_sang||'%';
+    
+    if v_cnt=0 then
+        DBMS_OUTPUT.PUT_LINE(v_sang||' 관련 상품은 없습니다');
+    else
+        DBMS_OUTPUT.PUT_LINE(v_sang||' 상품은 총 '||v_cnt||'개 조회됨');
+        DBMS_OUTPUT.PUT_LINE(' ');
+        DBMS_OUTPUT.PUT_LINE('상품명     색상     단가');
+        DBMS_OUTPUT.PUT_LINE('=========================');
+        
+         for s in s1 loop
+            DBMS_OUTPUT.PUT_LINE(s.sangpum||'   '||s.color||'   '||s.dan);  
+         end loop;
+    end if;
+ end;
+ /
+ 
+ exec searchsangpum('블라우스');
+ exec searchsangpum('레이스양말');
+ exec searchsangpum('바지');
+
+
+
+
+
+
+
+
+
+
+
 
 
 
