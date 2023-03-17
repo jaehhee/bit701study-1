@@ -147,6 +147,9 @@ select name from sawon; <=마이클만 출력
        [데이타추가]
   	insert into sawon (name,score,gender,buseo) values ('이하나',100,'여자','홍보부');
 
+	-- mysql 에서 제약조건 확인하기
+         select * from information_schema.table_constraints where table_name='sawon';
+
 
   ** 관련함수들
    1. concat('문자열1,'문자열2'...) -문자열을 이어준다
@@ -203,7 +206,7 @@ select left('have a nice day',4) from dual;
 select right('have a nice day',5) from dual;
 select mid('have a nice day',8,4) from dual;
 select substring('have a nice day',8,4) from dual;
-select left('가나다라마바사',3) from dual; /*한글도3글자 나옴*/
+select left('가나다라마바사',3) from dual; /*한글도3글자 나옴*/
 select substring('가나다라마바사',4,2) from dual;
 select concat(ltrim('   abc    '),'*') from dual;
 select concat(rtrim('   abc    '),'*') from dual;
