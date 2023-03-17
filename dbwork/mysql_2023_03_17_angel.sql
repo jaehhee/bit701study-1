@@ -113,10 +113,11 @@ select greatest(12,34,56,100,66) from dual; -- 가장 큰숫자
 select least(12,34,56,100,66) from dual; -- 가장 작은숫자
 
 
+select count(*) cnt from sawon,sawoninfo where sawon.num=sawoninfo.num;
 
 
-
-
+select buseo,count(*) count,round(avg(score),1) avgscore,max(score) maxscore,
+min(score) minscore from sawon group by buseo;
 
 
 

@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.Scanner;
 
 public class Ex1OracleShop {
 	static final String ORACLE_DRIVER="oracle.jdbc.driver.OracleDriver";
@@ -83,7 +84,101 @@ public class Ex1OracleShop {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		Ex1OracleShop ex1=new Ex1OracleShop();
-		ex1.writeShop();
+		//ex1.writeShop();
+		Scanner sc=new Scanner(System.in);
+		while(true)
+		{
+			System.out.println("검색할 상품명을 입력해주세요(종료:exit)");
+			String sang=sc.nextLine();
+			if(sang.equalsIgnoreCase("exit"))
+			{
+				System.out.println("프로그램을 종료합니다");
+				break;
+			}
+			
+			int totalCount=ex1.searchCount(sang);
+			if(totalCount==0)
+			{
+				System.out.println(sang+" 상품은 없습니다");
+				continue;//while문 처음으로
+			}
+			
+			ex1.searchSangpum(sang);
+		}
+	}
+
+	private int searchCount(String sang) {
+		// TODO Auto-generated method stub
+		int total=0;
+		Connection conn=this.getConnection();
+		Statement stmt=null;
+		ResultSet rs=null;
+		String sql="select count(*) from shop where sangpum like '%"+sang+"%'";
+		//System.out.println(sql);
+		
+		try {
+			stmt=conn.createStatement();		
+			rs=stmt.executeQuery(sql);
+			if(rs.next())
+				total=rs.getInt(1);//열번호로 갖구오기
+		}catch(SQLException e)
+		{
+			System.out.println("sql 오류:"+e.getMessage());
+		}finally {
+			try {
+				if(rs!=null) rs.close();
+				if(stmt!=null) stmt.close();
+				if(conn!=null) conn.close();
+			}catch (SQLException e) {
+				// TODO: handle exception
+			}
+		}
+		
+		return total;
+	}
+
+	private void searchSangpum(String sang) {
+		// TODO Auto-generated method stub
+		// select * from shop where sangpum like '%바지%';
+		
+		Connection conn=this.getConnection();
+		Statement stmt=null;
+		ResultSet rs=null;
+		String sql="select * from shop where sangpum like '%"+sang+"%'";
+		//System.out.println(sql);
+		
+		try {
+			stmt=conn.createStatement();		
+			rs=stmt.executeQuery(sql);
+			System.out.println("\""+sang+"\" 상품 검색 결과");
+			System.out.println();
+			
+			System.out.println("상품명       색상       수량    단가       날짜");
+			System.out.println("=".repeat(50));
+			while(rs.next())
+			{
+				String sangpum=rs.getString("sangpum");
+				int su=rs.getInt("su");
+				int dan=rs.getInt("dan");
+				String color=rs.getString("color");
+				Timestamp today=rs.getTimestamp("today");
+				SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+				
+				System.out.printf("%-10s%-8s%7d%8d%15s\n",sangpum,color,su,dan,sdf.format(today));
+			}
+			System.out.println("=".repeat(50));
+		}catch(SQLException e)
+		{
+			System.out.println("sql 오류:"+e.getMessage());
+		}finally {
+			try {
+				if(rs!=null) rs.close();
+				if(stmt!=null) stmt.close();
+				if(conn!=null) conn.close();
+			}catch (SQLException e) {
+				// TODO: handle exception
+			}
+		}
 	}
 
 }
