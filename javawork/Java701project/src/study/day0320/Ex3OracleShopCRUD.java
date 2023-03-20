@@ -89,17 +89,62 @@ public class Ex3OracleShopCRUD {
 	
 	public void selectShop()
 	{
+		Connection conn=getConnection();
+		PreparedStatement pstmt=null;
+		String sql="";	
 		
+		try {
+			pstmt=conn.prepareStatement(sql);
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			try {				
+				if(pstmt!=null) pstmt.close();
+				if(conn!=null) conn.close();
+			}catch(SQLException e) {}
+		}		
 	}
 	
 	public void updateSangpum()
 	{
+		Connection conn=getConnection();
+		PreparedStatement pstmt=null;
+		String sql="";	
 		
+		try {
+			pstmt=conn.prepareStatement(sql);
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			try {				
+				if(pstmt!=null) pstmt.close();
+				if(conn!=null) conn.close();
+			}catch(SQLException e) {}
+		}
 	}
 	
 	public void deleteSangpum()
 	{
+		Connection conn=getConnection();
+		PreparedStatement pstmt=null;
+		String sql="";	
 		
+		try {
+			pstmt=conn.prepareStatement(sql);
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			try {				
+				if(pstmt!=null) pstmt.close();
+				if(conn!=null) conn.close();
+			}catch(SQLException e) {}
+		}
 	}
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
