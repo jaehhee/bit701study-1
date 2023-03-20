@@ -2,6 +2,7 @@ package study.day0320;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Scanner;
 
@@ -50,6 +51,40 @@ public class Ex3OracleShopCRUD {
 	public void addSangpum()
 	{
 		
+		System.out.println("상품명은?");
+		String sangpum=sc.nextLine();
+		System.out.println("색상은?");
+		String color=sc.nextLine();
+		System.out.println("수량은?");
+		int su=Integer.parseInt(sc.nextLine());
+		System.out.println("단가는?");
+		int dan=Integer.parseInt(sc.nextLine());		
+		
+		Connection conn=getConnection();
+		PreparedStatement pstmt=null;
+		String sql="insert into shop (num,sangpum,color,su,dan,today) values (seq_test.nextval,?,?,?,?,sysdate)";	
+		
+		try {
+			pstmt=conn.prepareStatement(sql);//statement 생성시 sql문 검사
+			
+			//? 갯수만큼 데이타 바인딩 ? 는 1,2,3,4 순서
+			pstmt.setString(1, sangpum);
+			pstmt.setString(2, color);
+			pstmt.setInt(3, su);
+			pstmt.setInt(4, dan);
+			//실행
+			pstmt.execute();
+			System.out.println(sangpum+" 상품이 추가되었습니다");
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			try {				
+				if(pstmt!=null) pstmt.close();
+				if(conn!=null) conn.close();
+			}catch(SQLException e) {}
+		}		
 	}
 	
 	public void selectShop()
