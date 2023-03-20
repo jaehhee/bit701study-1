@@ -3,6 +3,7 @@ package study.day0320;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
 
@@ -89,12 +90,33 @@ public class Ex3OracleShopCRUD {
 	
 	public void selectShop()
 	{
+		System.out.println("검색할 상품을 입력하세요");
+		String sang=sc.nextLine();		
+		
 		Connection conn=getConnection();
 		PreparedStatement pstmt=null;
-		String sql="";	
+		ResultSet rs=null;
+		String sql="select * from shop where sangpum like ? order by num asc";	
 		
 		try {
 			pstmt=conn.prepareStatement(sql);
+			//바인딩
+			pstmt.setString(1, "%"+sang.trim()+"%");
+			rs=pstmt.executeQuery();
+			System.out.println("검색 결과에 대한 상품");
+			System.out.println();
+			System.out.println("번호\t상품명\t색상\t수량\t단가\t날짜");
+			System.out.println("=".repeat(50));
+			
+			while(rs.next())
+			{
+				System.out.println(rs.getInt("num")+"\t"+
+									rs.getString("sangpum")+"\t"+
+									rs.getString("color")+"\t"+
+									rs.getInt("su")+"\t"+
+									rs.getInt("dan")+"\t"+
+									rs.getString("today").substring(0,10));
+			}			
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -109,12 +131,29 @@ public class Ex3OracleShopCRUD {
 	
 	public void updateSangpum()
 	{
+		System.out.println("수정할 num 값은?");
+		int num=Integer.parseInt(sc.nextLine());
+		System.out.println("수정할 수량은?");
+		int su=Integer.parseInt(sc.nextLine());
+		System.out.println("수정할 색상은?");
+		String color=sc.nextLine();
+		
 		Connection conn=getConnection();
 		PreparedStatement pstmt=null;
-		String sql="";	
+		String sql="update shop set su=?,color=? where num=?";	
 		
 		try {
 			pstmt=conn.prepareStatement(sql);
+			//바인딩
+			pstmt.setInt(1, su);
+			pstmt.setString(2, color);
+			pstmt.setInt(3, num);
+			//실행
+			int n=pstmt.executeUpdate();
+			if(n==0)
+				System.out.println("해당 num 값이 존재하지 않습니다");
+			else
+				System.out.println("해당 상품이 수정되었습니다");
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -129,13 +168,24 @@ public class Ex3OracleShopCRUD {
 	
 	public void deleteSangpum()
 	{
+		System.out.println("삭제할 num 값 입력");
+		int num=Integer.parseInt(sc.nextLine());
+		
 		Connection conn=getConnection();
 		PreparedStatement pstmt=null;
-		String sql="";	
+		//String sql="delete from shop where num=?";
+		String sql="delete from shop where num="+num;
 		
 		try {
 			pstmt=conn.prepareStatement(sql);
-			
+			//바인딩
+			//pstmt.setInt(1, num);
+			//실행
+			int n=pstmt.executeUpdate();
+			if(n==0)
+				System.out.println("해당 상품이 없습니다");
+			else
+				System.out.println("해당 상품이 삭제되었습니다");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
