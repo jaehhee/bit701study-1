@@ -86,8 +86,8 @@ public class Ex1DBMunje {
 		Connection conn=getConnection();
 		Statement stmt=null;
 		ResultSet rs=null;
-		String sql="select * from bitcamp where name like '"+search+"%'";
-		System.out.println(sql);
+		String sql="select * from bitcamp where name like '"+search+"%' order by name asc";
+		//System.out.println(sql);
 		
 		try {
 			stmt=conn.createStatement();
@@ -113,7 +113,7 @@ public class Ex1DBMunje {
 			}			
 			
 		} catch (SQLException e) {
-			System.out.println("writeData 오류:"+e.getMessage());
+			System.out.println("searchNameData 오류:"+e.getMessage());
 		}finally {
 			try {
 				if(rs!=null) rs.close();
@@ -126,12 +126,78 @@ public class Ex1DBMunje {
 	//평균검색
 	public void searchAvgData()
 	{
+		System.out.println("검색할 평균을 입력하세요(평균보다 높은 데이타 출력)");
+		double searchAvg=Double.parseDouble(sc.nextLine());
+				
+		Connection conn=getConnection();
+		Statement stmt=null;
+		ResultSet rs=null;
+		String sql="select num,name,java,spring,java+spring sum,(java+spring)/2 avg,today from bitcamp where (java+spring)/2>="+searchAvg+" order by avg desc";//평균이 높은데이타부터 출력
+		//System.out.println(sql);
 		
+		try {
+			stmt=conn.createStatement();
+			rs=stmt.executeQuery(sql);
+			
+			System.out.println("\t** 평균 "+searchAvg+"점 이상 검색 결과 **");
+			System.out.println();
+			System.out.println("번호  이름      자바  스프링     합계    평균    날짜 ");
+			System.out.println("=".repeat(60));
+			
+			while(rs.next())
+			{
+				int num=rs.getInt("num");
+				String name=rs.getString("name");
+				int java=rs.getInt("java");
+				int spring=rs.getInt("spring");
+				String today=rs.getString("today");
+				
+				int sum=rs.getInt("sum");
+				double avg=rs.getDouble("avg");
+				
+				System.out.println(num+"   "+name+"\t"+java+"\t"+spring+"\t"+sum+"\t"+avg+"\t"+today);
+			}			
+			
+		} catch (SQLException e) {
+			System.out.println("searchAvgData 오류:"+e.getMessage());
+		}finally {
+			try {
+				if(rs!=null) rs.close();
+				if(stmt!=null) stmt.close();
+				if(conn!=null) conn.close();
+			}catch(SQLException e) {}
+		}
 	}
 	
 	//데이타 추가
 	public void insertData()
 	{
+		System.out.println("추가할 이름은?");
+		String name=sc.nextLine();
+		System.out.println("추가할 자바점수는?");
+		int java=Integer.parseInt(sc.nextLine());
+		System.out.println("추가할 스프링점수는?");
+		int spring=Integer.parseInt(sc.nextLine());
+		
+		Connection conn=this.getConnection();
+		Statement stmt=null;
+		String sql="insert into bitcamp (name,java,spring,today) values ('"+name+"',"+java+","+spring+",now())";//mysql
+		//String sql="insert into bitcamp values (seq1.nextval,'"+name+"',"+java+","+spring+",sysdate)";//oracle
+		//System.out.println(sql);
+		
+		try {
+			stmt=conn.createStatement();
+			//실행
+			stmt.execute(sql);
+			System.out.println("데이타가 추가되었습니다");
+		} catch (SQLException e) {
+			System.out.println("insert 오류:"+e.getMessage());
+		}finally {
+			try {				
+				if(stmt!=null) stmt.close();
+				if(conn!=null) conn.close();
+			}catch(SQLException e) {}
+		}		
 		
 	}
 	
