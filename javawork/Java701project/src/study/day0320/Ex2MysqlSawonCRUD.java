@@ -2,6 +2,7 @@ package study.day0320;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
@@ -102,15 +103,32 @@ public class Ex2MysqlSawonCRUD {
 	{
 		Connection conn=getConnection();
 		Statement stmt=null;
-		String sql="";
+		ResultSet rs=null;
+		String sql="select * from sawon order by num";
 
 		try {
 			stmt=conn.createStatement();
+			rs=stmt.executeQuery(sql);
+			
+			System.out.println(" ** 전체 사원 명단 **");
+			System.out.println();
+			System.out.println("번호\t사원명\t성별\t부서명\t점수");
+			System.out.println("=".repeat(40));
+			while(rs.next())
+			{
+				System.out.println(rs.getInt("num")+"\t"+
+									rs.getString("name")+"\t"+
+									rs.getString("gender")+"\t"+
+									rs.getString("buseo")+"\t"+
+									rs.getInt("score"));
+			}
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally {
-			try {				
+			try {	
+				if(rs!=null) rs.close();
 				if(stmt!=null) stmt.close();
 				if(conn!=null) conn.close();
 			}catch(SQLException e) {}
@@ -120,12 +138,27 @@ public class Ex2MysqlSawonCRUD {
 	//이름으로 검색
 	public void searchSawonName()
 	{
+		System.out.println("검색할 사원명을 입력하세요");
+		String searchName=sc.nextLine();
+		
 		Connection conn=getConnection();
 		Statement stmt=null;
-		String sql="";
-
+		ResultSet rs=null;
+		String sql="select * from sawon where name='"+searchName+"'";
+		
 		try {
 			stmt=conn.createStatement();
+			rs=stmt.executeQuery(sql);
+			
+			System.out.println("\""+searchName+"\" 사원 검색 결과");
+			
+			while(rs.next())
+			{
+				System.out.println("---------------------");
+				System.out.println("성별:"+rs.getString("gender"));
+				System.out.println("부서명:"+rs.getString("buseo"));
+				System.out.println("점수 :"+rs.getInt("score"));				
+			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -140,12 +173,20 @@ public class Ex2MysqlSawonCRUD {
 	//이름으로 삭제
 	public void deleteSawonName()
 	{
+		System.out.println("삭제할 이름을 입력해주세요");
+		String name=sc.nextLine();
+		
 		Connection conn=getConnection();
 		Statement stmt=null;
-		String sql="";
+		String sql="delete from sawon where name='"+name+"'";		
 
 		try {
 			stmt=conn.createStatement();
+			int n=stmt.executeUpdate(sql);//반환타입: 성공적으로 삭제된 데이타의 갯수
+			if(n==0)
+				System.out.println("사원중 "+name+" 님은 없습니다");
+			else
+				System.out.println("총 "+n+"명의 "+name+" 님이 삭제되었습니다");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -160,12 +201,26 @@ public class Ex2MysqlSawonCRUD {
 	//시퀀스 번호로 수정
 	public void updateSawonNum()
 	{
+		System.out.println("수정할 시퀀스 번호를 입력하세요");
+		int num=Integer.parseInt(sc.nextLine());
+		System.out.println("수정할 이름은?");
+		String name=sc.nextLine();
+		System.out.println("수정할 부서는?");
+		String buseo=sc.nextLine();
+		
 		Connection conn=getConnection();
 		Statement stmt=null;
-		String sql="";
+		String sql="update sawon set name='"+name+"',buseo='"+buseo+"' where num="+num;
+		//System.out.println(sql);
 
 		try {
 			stmt=conn.createStatement();
+			int n=stmt.executeUpdate(sql);
+			if(n==0)
+				System.out.println("해당 번호는 없습니다");
+			else
+				System.out.println("사원의 정보를 수정했습니다");
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -182,15 +237,25 @@ public class Ex2MysqlSawonCRUD {
 	{
 		Connection conn=getConnection();
 		Statement stmt=null;
-		String sql="";
+		ResultSet rs=null;
+		String sql="select gender,count(*) count,round(avg(score),1) avg from sawon group by gender";
 
 		try {
 			stmt=conn.createStatement();
+			rs=stmt.executeQuery(sql);
+			System.out.println("성별\t인원수\t평균점수");
+			System.out.println("------------------------------");
+			while(rs.next())
+			{
+				System.out.println(rs.getString("gender")+"\t"+
+						rs.getInt("count")+"\t"+rs.getDouble("avg"));
+			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally {
-			try {				
+			try {		
+				if(rs!=null) rs.close();
 				if(stmt!=null) stmt.close();
 				if(conn!=null) conn.close();
 			}catch(SQLException e) {}
@@ -202,15 +267,25 @@ public class Ex2MysqlSawonCRUD {
 	{
 		Connection conn=getConnection();
 		Statement stmt=null;
-		String sql="";
+		ResultSet rs=null;
+		String sql="select buseo,count(*) count,round(avg(score),1) avg from sawon group by buseo";
 
 		try {
 			stmt=conn.createStatement();
+			rs=stmt.executeQuery(sql);
+			System.out.println("부서별\t인원수\t평균점수");
+			System.out.println("------------------------------");
+			while(rs.next())
+			{
+				System.out.println(rs.getString("buseo")+"\t"+
+						rs.getInt("count")+"\t"+rs.getDouble("avg"));
+			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally {
-			try {				
+			try {	
+				if(rs!=null) rs.close();
 				if(stmt!=null) stmt.close();
 				if(conn!=null) conn.close();
 			}catch(SQLException e) {}
